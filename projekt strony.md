@@ -7,7 +7,7 @@
 
 ## Stuck technologiczny
 
-- js, html, css, json
+- node.js, html, css, json
 
 ## Logika biznesowa
 
@@ -29,4 +29,5 @@
 
 ---
 # Standardowe wymagania końcowe projektu
+
 

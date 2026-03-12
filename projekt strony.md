@@ -26,8 +26,10 @@
 ## Wymagania prawne
 
 - prawa autorskie
+- polityka prywatności
 
 ---
 # Standardowe wymagania końcowe projektu
+
 
 

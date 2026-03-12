@@ -3,10 +3,11 @@
 ## Architektura
 
 - Mikroserwisy
+- Rest API
 
 ## Stuck technologiczny
 
-- js, html, css
+- js, html, css, json
 
 ## Logika biznesowa
 
@@ -28,3 +29,4 @@
 
 ---
 # Standardowe wymagania końcowe projektu
+

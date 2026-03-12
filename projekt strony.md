@@ -29,7 +29,8 @@
 - polityka prywatności
 
 ---
-# Standardowe wymagania końcowe projektu
+
+
 
 
 

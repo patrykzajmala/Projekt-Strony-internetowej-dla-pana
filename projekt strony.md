@@ -22,6 +22,8 @@
 ## wymagania techniczne
 
 - żeby chociaż działało
+- baza danych z ludźmi którzy mają zakupiony karnet
+- działający sklep
 
 ## Wymagania prawne
 
@@ -29,6 +31,7 @@
 - polityka prywatności
 
 ---
+
 
 
 

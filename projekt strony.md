@@ -1,37 +1,35 @@
-# Strona klubu bokserskiego + mini sklepik z merchem
+# Strona treningu sztuk walk
 
 ## Architektura
 
-- Mikroserwisy
-- Rest API
+- Monolit
 
 ## Stuck technologiczny
 
-- node.js, html, css, json
+- js, html, css
 
 ## Logika biznesowa
 
-- pasek na górze którym nawiguje się pomiędzy zakładkami
+- pasek na górze którym nawiguje się pomiędzy kursami
 - user flow
 
 ## krupa docelowa
 
-- odbiorcą projektu są członkowie klubu lub ludzie zainteresowani dołączeniem do klubu
-- ich potrzeby i oczekiwania to szybkie i wygodne płatności, szczegółowe informacje o klubie
+- odbiorcą projektu są ludzie w młodym wieku interesujący się sztukami walki
+- ich potrzeby i oczekiwania to pełne plany treningowe z zrozumiałymi instrukcjami, treningi które można wykonać nawet w domu
 
 ## wymagania techniczne
 
 - żeby chociaż działało
-- baza danych z ludźmi którzy mają zakupiony karnet
-- działający sklep
+- Treningi w kolejności chronologicznej
+- Różne typy treningów do rozwijania różnych umiejętności
+- Treningi z boksu, zapasów, brazylijskiego jujitsu
 
 ## Wymagania prawne
 
 - prawa autorskie
-- polityka prywatności
 
 ---
-
 
 
 

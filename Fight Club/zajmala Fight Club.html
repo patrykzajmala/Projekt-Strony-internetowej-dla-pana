@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zajmala Fight Club</title>
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+            --locked-color: #555555;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1920&auto=format&fit=crop') no-repeat center/cover;
+            width: 100%;
+            box-sizing: border-box;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .hero h1 {
+            color: var(--primary-color);
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero .subtitle {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Główny kontener */
+        .container {
+            padding: 40px 20px;
+            max-width: 1200px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Widok katalogu kursów */
+        .courses-grid {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .course-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            width: 320px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s, border 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card.completed {
+            border-color: #2ecc71;
+        }
+
+        .course-img-container {
+            width: 100%;
+            height: 200px;
+            background-color: #613b3b;
+            overflow: hidden;
+        }
+
+        .course-img-container img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .course-card:not(.locked):hover .course-img-container img {
+            transform: scale(1.05);
+        }
+
+        .course-details {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .course-details h3 {
+            margin: 10px 0;
+            font-size: 1.4rem;
+        }
+
+        .course-details p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-complete {
+            background-color: #3498db;
+        }
+
+        .btn-complete:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #7f8c8d;
+            max-width: 200px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #95a5a6;
+        }
+
+        .btn-pricing {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            max-width: 180px;
+        }
+
+        .btn-pricing:hover {
+            background-color: var(--primary-color);
+        }
+
+        .course-card.locked {
+            opacity: 0.4;
+        }
+
+        .course-card.locked .course-img-container img {
+            filter: grayscale(100%);
+            /* Zdjęcie staje się czarno-białe, gdy kurs jest zablokowany */
+        }
+
+        .course-card.locked .btn {
+            background-color: var(--locked-color);
+            cursor: not-allowed;
+        }
+
+        .status-badge {
+            align-self: flex-start;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .badge-open {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        .badge-done {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .badge-locked {
+            background-color: #7f8c8d;
+            color: white;
+        }
+
+        .course-view-section {
+            display: none;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .course-view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #3d3d3d;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .course-main-media {
+            width: 100%;
+            height: 400px;
+            background-color: #111;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .course-main-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #active-course-text img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="hero">
+        <h1>Zajmala Boxing</h1>
+        <p class="subtitle">Rozwijaj swoje umiejętności walki krok po kroku.</p>
+    </header>
+
+    <main class="container">
+
+        <div id="catalog-view" class="courses-grid">
+
+            <div class="course-card" id="course-card-boks">
+                <div class="course-img-container">
+                    <img id="img-source-boks" src="boxing1.webp" alt="Kurs Boksu">
+                </div>
+                <div class="course-details">
+                    <div>
+                        <span class="status-badge badge-open" id="badge-boks">W trakcie</span>
+                        <h3>Kurs Boksu</h3>
+                        <p>Podstawy stójki, poruszanie się w ringu oraz techniki wyprowadzania ciosów.</p>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="openCourse('boks')">Otwórz kurs</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-card" id="course-card-zapasy">
+                <div class="course-img-container">
+                    <img id="img-source-zapasy" src="wrestling.png" alt="Kurs Zapasów">
+                </div>
+                <div class="course-details">
+                    <div>
+                        <span class="status-badge badge-open" id="badge-zapasy">W trakcie</span>
+                        <h3>Kurs Zapasów</h3>
+                        <p>Rzuty, obalenia, kontrola w klinczu oraz obrona przed sprowadzeniami.</p>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="openCourse('zapasy')">Otwórz kurs</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-card locked" id="course-card-bjj">
+                <div class="course-img-container">
+                    <img id="img-source-bjj" src="bjj.jpg" alt="Kurs BJJ">
+                </div>
+                <div class="course-details">
+                    <div>
+                        <span class="status-badge badge-locked" id="badge-bjj">Zablokowany</span>
+                        <h3>Brazylijskie Jiu-Jitsu</h3>
+                        <p>Walka w parterze, techniki kończące, dźwignie i duszenia. Wymaga ukończenia Boksu i Zapasów.
+                        </p>
+                    </div>
+                    <div>
+                        <button class="btn" id="btn-open-bjj" disabled onclick="openCourse('bjj')">Kurs
+                            zablokowany</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="course-content-view" class="course-view-section">
+            <div class="course-view-header">
+                <h2 id="active-course-title">Nazwa Kursu</h2>
+                <button class="btn btn-secondary" onclick="closeCourse()">← Wróć do listy</button>
+            </div>
+
+            <div class="course-main-media">
+                <img id="course-view-large-img" src="" alt="Zdjęcie kursu">
+            </div>
+
+            <div id="active-course-text">
+            </div>
+
+            <div class="course-completion-area">
+                <button class="btn btn-complete" id="btn-active-complete" onclick="completeActiveCourse()">Zaliczyłem
+                    ten kurs</button>
+            </div>
+        </div>
+        <h6>Wszystkie zdjęcia należą do strony wikihow.com</h6>
+    </main>
+
+    <script>
+        let currentActiveCourse = null;
+
+        const progress = {
+            boks: false,
+            zapasy: false,
+            bjj: false
+        };
+
+        const courseContents = {
+            boks: {
+                title: "Kurs Boksu - Panel Lekcji",
+                html: '<h3>Lekcja 1: Pozycja bokserska</h3><p>Ustaw stopy na szerokość ramion, ugnij lekko kolana, schowaj brodę. Lewa noga do przodu, a prawa do tyłu. dłonie przyklej do brody a ręcę wzdłuż tłowia. </p><img src="boxingStance.jpg" alt="Box"><h3> Lekcja 2: Ciosy proste</h3><p>W pozycji bokserskiej wyprostuj rękę do przodu, rękę wyprostuj do końca (do momentu zablokowania łokcia) i przekręć podczas ciosu, aby na jego końcu była palcami na dół. Ciosy wyprowadza się całym ciałem, nie tylko rękoma dlatego też podczas wyprowadzenia ciosu powinno się skręcić całe ciało razem z nim. spróbuj samemu (sprawdź zdj poniżej)</p><img src="BoxingJab.jpg" alt="Jab"><h3>Lekcja 3: "Footwork"</h3><p>"Footwork" inaczej praca stóp jest jedną z najważniejszych rzeczy w boksie, na co ci mocne ciosy jak próbując je wyprowadzić zaplątasz sie o własne nogi i dasz przeciwnikowi darmowy knockdown. aby poprawnie poruszać się w ringu ruch musisz zacząć od stopy bliżej strony w którą sie kierujesz np. jak chcesz ruszyć się w lewo pierw ruszasz się lewą nogą i dopiero później prawą. Pamiętaj o zachowaniu postawy bokserskiej (zobacz zdjęcie)</p><img src="BoxingFootwork.jpg" alt="Footwork">'
+            },
+            zapasy: {
+                title: "Kurs Zapasów - Panel Lekcji",
+                html: '<h3>Lekcja 1: Wyjście do pozycji</h3><p>Staniesz prosto, rozstawiając stopy odrobinę szerzej niż szerokość Twoich barków. Zrób jedną nogą mały krok w przód (to będzie Twoja noga wykroczna). Ugnij mocno kolana i obniż całe ciało w dół, zachowując przy tym proste plecy.Pochyl delikatnie tułów do przodu, ale nie zginaj się w pasie, głowa musi patrzeć prosto przed siebie. Przyciągnij łokcie blisko żeber, a dłonie wystaw przed siebie na wysokości pasów i kolan, żeby chronić nogi.</p><img src="WrestlingStance.jpg" alt="WrestlingStance"><h3>Lekcja 2: Klincz</h3><p>Zbliż się do przeciwnika w niskiej pozycji zapaśniczej, cały czas chroniąc swoje nogi. Wyciągnij ręce i zbij dłonie przeciwnika, szukając kontaktu fizycznego z jego ciałem.Wsuń jedną rękę głęboko pod pachę rywala (podchwyt), a drugą ręką mocno chwyć go za kark (krawat).Dociśnij swoje czoło do skroni lub obojczyka przeciwnika, żeby zablokować mu możliwość ruchu głową.Przyciągnij rywala do siebie, wsuń swoje biodra bliżej jego bioder i zacznij napierać ciałem, żeby kontrolować jego równowagę.</p><img src="clinch.jpg" alt="Clinch"><h3>Lekcja 3: Sprawl</h3><p>Zanim nauczysz sie technik ofensywnych musisz wiedziec jak prewentowac ataki, wlasnie to robi sprawl. Kiedy przeciwnik rzuca się do Twoich nóg, błyskawicznie wyrzuć obie stopy daleko w tył. Opadnij biodrami mocno na matę (dociskając nimi przeciwnika do ziemi), tak aby Twoje nogi były całkowicie poza jego zasięgiem. Podeprzyj się rękami o matę lub barki rywala, zachowując wyprostowane ręce. Klatką piersiową napieraj na plecy przeciwnika, żeby uniemożliwić mu wstanie. Szybkim ruchem bioder "odskocz" do tyłu i wróć do pozycji stojącej.</p><img src="Sprawl.jpg" alt="Sprawl">'
+            },
+            bjj: {
+                title: "Brazylijskie Jiu-Jitsu - Witamy w Parterze!",
+                html: '<h3>Lekcja 1: Pozycja</h3><p>W brazylijskim jiu jitsu nie ma jednej ustalonej pozycji, więc nauczę cię jedną z popularniejszych. Staniesz w szerokim rozkroku, stopy nieco szerzej niż barki, jedna noga wysunięta lekko do przodu. Ugnij kolana, ale zostań wyżej niż w zapasach – pozycja w BJJ jest bardziej wyprostowana, żeby łatwiej było pracować nogami. Wyciągnij ręce przed siebie, ugięte w łokciach (jakbyś trzymał przed sobą dużą piłkę) – dłonie mają być gotowe do chwytania kimona (gi) lub rąk przeciwnika. Trzymaj brodę schowaną przy klatce piersiowej, żeby chronić szyję przed szybkim duszeniem. Ciężar ciała rozłóż równomiernie na obie nogi, żeby móc szybko zareagować na próbę obalenia lub samemu skoczyć do gardy (pull guard).</p><h3>Lekcja 2: Wpięcie za plecy (Back Take)</h3><p>Znajdź się za plecami siedzącego lub klęczącego przeciwnika. Owiń swoje ręce wokół jego klatki piersiowej od tyłu w tzw. chwyt "pas bezpieczeństwa" (jedna ręka idzie nad jego barkiem, druga pod pachą, a dłonie łączysz na jego piersi). Usiądź na macie i ściągnij przeciwnika na siebie, kładąc swoje plecy (lub bok) na ziemi. Wsuń swoje stopy od wewnętrznej strony jego ud i zahacz je o jego biodra (tzw. "haki" lub hooks). Dociśnij swoją klatkę piersiową mocno do jego pleców i schowaj głowę za jego barkiem, żeby nie dostać przypadkowo z główki.</p><h3>Lekcja 3: Mata Leo(Rear Naked Choke)</h3><p>Mając już zapięty "pas bezpieczeństwa" za plecami rywala, wsuń rękę (tę, która idzie nad jego barkiem) głęboko pod jego brodę, owijając jego szyję przedramieniem. Zegnij tę rękę w łokciu tak, aby Twoje przedramię i ramię mocno ściskały boki jego szyi, a dłoń wylądowała na Twoim własnym bicepsie drugiej ręki. Drugą dłoń schowaj głęboko za głowę przeciwnika (tak, aby zablokować mu możliwość ucieczki do tyłu). Schowaj swoją głowę tuż obok jego głowy, żeby uniemożliwić mu zerwanie uchwytu. Weź głęboki wdech, napnij klatkę piersiową i delikatnie cofnij łokcie, zaciskając uścisk jak imadło.</p>'
+            }
+        };
+
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedBoks = getCookie('course_boks');
+            const savedZapasy = getCookie('course_zapasy');
+            const savedBjj = getCookie('course_bjj');
+
+            if (savedBoks === 'completed') updateUIForCompleted('boks');
+            if (savedZapasy === 'completed') updateUIForCompleted('zapasy');
+            if (savedBjj === 'completed') updateUIForCompleted('bjj');
+
+            checkUnlockCondition();
+        });
+
+        function updateUIForCompleted(courseName) {
+            progress[courseName] = true;
+
+            const card = document.getElementById(`course-card-${courseName}`);
+            if (card) card.classList.add('completed');
+
+            const badge = document.getElementById(`badge-${courseName}`);
+            if (badge) {
+                badge.textContent = 'Ukończono';
+                badge.className = 'status-badge badge-done';
+            }
+        }
+
+        function completeActiveCourse(isUser = true) {
+            if (!currentActiveCourse) return;
+
+            setCookie(`course_${currentActiveCourse}`, 'completed', 365);
+
+            updateUIForCompleted(currentActiveCourse);
+            checkUnlockCondition();
+            updateCompleteButtonState();
+            if (isUser){
+                closeCourse();
+            }
+        }
+
+        function updateCompleteButtonState() {
+            const completeBtn = document.getElementById('btn-active-complete');
+            if (progress[currentActiveCourse]) {
+                completeBtn.disabled = true;
+                completeBtn.textContent = 'Zaliczone ✓';
+            } else {
+
+                completeBtn.disabled = true;
+                completeBtn.textContent = 'Skończ kurs, aby zaliczyć';
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!currentActiveCourse || progress[currentActiveCourse]) return;
+
+            const isAtBottom = (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 210;
+
+            if (isAtBottom) {
+                const completeBtn = document.getElementById('btn-active-complete');
+                completeBtn.disabled = false;
+                completeBtn.textContent = 'Zaliczyłem ten kurs';
+                completeActiveCourse(false);
+            }
+        });
+
+        function checkUnlockCondition() {
+            if (progress.boks && progress.zapasy) {
+                const bjjCard = document.getElementById('course-card-bjj');
+                const bjjBadge = document.getElementById('badge-bjj');
+                const bjjBtn = document.getElementById('btn-open-bjj');
+
+                if (bjjCard && bjjCard.classList.contains('locked')) {
+                    bjjCard.classList.remove('locked');
+                    bjjCard.style.borderColor = 'var(--primary-color)';
+                }
+
+                if (bjjBadge && progress.bjj === false) {
+                    bjjBadge.textContent = 'Odblokowany';
+                    bjjBadge.className = 'status-badge badge-open';
+                }
+
+                if (bjjBtn) {
+                    bjjBtn.disabled = false;
+                    bjjBtn.textContent = 'Otwórz kurs';
+                }
+            }
+        }
+
+        function openCourse(courseName) {
+            if (courseName === 'bjj' && (!progress.boks || !progress.zapasy)) {
+                return;
+            }
+
+            currentActiveCourse = courseName;
+
+            document.getElementById('catalog-view').style.display = 'none';
+            document.getElementById('course-content-view').style.display = 'block';
+
+            const miniatureSrc = document.getElementById(`img-source-${courseName}`).src;
+            document.getElementById('course-view-large-img').src = miniatureSrc;
+
+            document.getElementById('active-course-title').textContent = courseContents[courseName].title;
+            document.getElementById('active-course-text').innerHTML = courseContents[courseName].html;
+
+            updateCompleteButtonState();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeCourse() {
+            currentActiveCourse = null;
+            document.getElementById('course-content-view').style.display = 'none';
+            document.getElementById('catalog-view').style.display = 'flex';
+        }
+    </script>
+</body>
+
+</html>
